@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import threeStageSlidingPanel from "@/components/threeStageSlidingPanel/index";
+import threeStageSlidingPanel from "@/components/xycoder-threeStageSlidingPanel/index";
 export default {
   components: {
     threeStageSlidingPanel
