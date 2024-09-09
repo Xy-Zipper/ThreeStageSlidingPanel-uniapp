@@ -107,7 +107,9 @@ export default {
       const now = Date.now();
       if (now - startTime <= fastMoveDelay) {
         const startPercent = Number(startY.replace("%", ""));
-
+        if (percent == startPercent) {
+          return;
+        }
         // 快速滑动 上升或降低一个等级
         // 上滑
         if (startPercent - percent >= 0) {
