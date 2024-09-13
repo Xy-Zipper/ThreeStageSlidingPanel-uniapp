@@ -18,7 +18,7 @@
         ref="scroll"
         id="scroll"
         :scroll-y="isScroll"
-        style="height: 100%"
+        style="height: 100vh"
       >
         <slot></slot>
       </scroll-view>
