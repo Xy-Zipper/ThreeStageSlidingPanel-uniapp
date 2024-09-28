@@ -13,7 +13,7 @@
     }"
     :class="[{ 'box-radius': !isScroll }, { translate: animationType }]"
   >
-    <view class="panel-content">
+    <view class="panel-content"> 
       <scroll-view
         ref="scroll"
         id="scroll"
@@ -28,7 +28,17 @@
 
 <script>
 export default {
-  props: {},
+  name: "OneExpansionPanel",
+  props: {
+    levelArray: {
+      type: Array,
+      default: () => ["0%", "20%", "70%"]
+    },
+    firstLevel: {
+      type: String,
+      default: "70%"
+    }
+  },
   data() {
     const fastMoveDelay = 200;
     return {
@@ -37,7 +47,7 @@ export default {
       animationType: "",
       maxHeight: 1000,
       height: 0,
-      currentY: "70%",
+      currentY: this.firstLevel,
       lastY: 0,
       startY: 0,
       startTime: 0
@@ -45,15 +55,11 @@ export default {
   },
   computed: {
     isScroll() {
-      return Number(this.currentY.replace("%", "")) <= 0;
-    }
-  },
-  watch: {
-    currentY(val) {
-      const percent = Number(val.replace("%", ""));
-      if (percent < 0) {
-        this.currentY = "0%";
-      }
+      const maxLevel = this.levelArray[0];
+
+      return (
+        Number(this.currentY.replace("%", "")) <= maxLevel.replace("%", "")
+      );
     }
   },
   created() {
@@ -65,7 +71,7 @@ export default {
     foldPanel() {
       const styles = {
         "--translate-start": this.currentY,
-        "--translate-end": "70%"
+        "--translate-end": this.firstLevel
       };
 
       this.animationStyles = styles;
@@ -86,10 +92,12 @@ export default {
       const { lastScrollTop = 0 } = this.$refs.scroll || {};
       // 如果是滚动状态，则不执行
       if (isScroll && lastScrollTop) return;
-
       const curPos = Number(currentY.replace("%", ""));
+      let curNum = curPos - ((lastY - pageY) / maxHeight) * 100;
+      if (curNum > 100) curNum = 100; // 限制最大值
+      if (curNum < 0) curNum = 0; // 限制最小值
+      this.currentY = curNum + "%";
 
-      this.currentY = curPos - ((lastY - pageY) / maxHeight) * 100 + "%";
       this.lastY = pageY;
     },
     touchendHandle(e) {
@@ -105,38 +113,49 @@ export default {
       const percent = Number(this.currentY.replace("%", ""));
       //   判断是否快速上下滑动
       const now = Date.now();
+
+      const levelArrayNumber = this.levelArray.map(o =>
+        Number(o.replace("%", ""))
+      );
       if (now - startTime <= fastMoveDelay) {
         const startPercent = Number(startY.replace("%", ""));
         if (percent == startPercent) {
           return;
         }
+        const levelIndex = levelArrayNumber.findIndex(o => o == startPercent);
         // 快速滑动 上升或降低一个等级
         // 上滑
         if (startPercent - percent >= 0) {
-          if (startPercent == 0) {
-            return;
-          } else if (startPercent == 20) {
-            styles["--translate-end"] = "0%";
+          if (levelIndex !== 0) {
+            styles["--translate-end"] = this.levelArray[levelIndex - 1];
           } else {
-            styles["--translate-end"] = "20%";
+            styles["--translate-end"] = this.levelArray[0];
           }
         } else {
           // 下滑
-          if (startPercent == 0) {
-            styles["--translate-end"] = "20%";
-          } else if (startPercent == 20) {
-            styles["--translate-end"] = "70%";
+          if (levelIndex !== this.levelArray.length - 1) {
+            styles["--translate-end"] = this.levelArray[levelIndex + 1];
           } else {
-            styles["--translate-end"] = "70%";
+            styles["--translate-end"] =
+              this.levelArray[this.levelArray.length - 1];
           }
         }
       } else {
-        if (percent < 10) {
-          styles["--translate-end"] = "0%";
-        } else if (percent < 55) {
-          styles["--translate-end"] = "20%";
+        if (percent <= levelArrayNumber[0]) {
+          styles["--translate-end"] = this.levelArray[0];
+        } else if (percent >= levelArrayNumber[levelArrayNumber.length - 1]) {
+          styles["--translate-end"] =
+            this.levelArray[this.levelArray.length - 1];
         } else {
-          styles["--translate-end"] = "70%";
+          levelArrayNumber.reduce((pre, cur) => {
+            if (percent > pre && percent < cur) {
+              styles["--translate-end"] =
+                (Math.abs(pre - percent) > Math.abs(cur - percent)
+                  ? cur
+                  : pre) + "%";
+            }
+            return cur;
+          }, levelArrayNumber[0]);
         }
       }
 
@@ -169,7 +188,6 @@ export default {
   top: 0;
   width: 100vw;
   background-color: #ffffff;
-  padding: 30rpx 20rpx;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

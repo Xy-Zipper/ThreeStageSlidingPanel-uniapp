@@ -1,10 +1,9 @@
 <template>
   <view class="content">
     <view class="map">
-      <amapTrace
+    <amapTrace
         ref="map"
-        amap-key="高德ApiKey"
-        service-host="http://localhost:8888/"
+        amap-key="" 
         :list="list"
         @load-data="loadData"
         @update-trace-index="getTraceIndex"
@@ -33,7 +32,7 @@ export default {
     };
   },
   onLoad() {},
-  methods: {
+  methods: { 
     loadData() {
       this.list = [
         {

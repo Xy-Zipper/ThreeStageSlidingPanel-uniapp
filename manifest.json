@@ -1,6 +1,6 @@
 {
-    "name" : "panel-ui",
-    "appid" : "__UNI__AEEF262",
+    "name" : "ThreeStageSlidingPanel-uniapp",
+    "appid" : "__UNI__114AD1F",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -17,7 +17,9 @@
             "delay" : 0
         },
         /* 模块配置 */
-        "modules" : {},
+        "modules" : {
+            "Maps" : {}
+        },
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
@@ -50,7 +52,15 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "maps" : {
+                    "amap" : {
+                        "name" : "amapN7kOpqcM",
+                        "appkey_ios" : "27a9feba7ca69fc8594933b16e9bf200",
+                        "appkey_android" : "49591ca1e642455265657cb8a11ed410"
+                    }
+                }
+            }
         }
     },
     /* 快应用特有相关 */
@@ -72,7 +82,18 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics": {  
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "amap" : {
+                    "key" : "704c691c88d68b31e1482ab191c9a217",
+                    "securityJsCode" : "0377dd4b4624df82af82f1adb38e5380",
+                    "serviceHost" : ""
+                }
+            }
+        }
     }
 }

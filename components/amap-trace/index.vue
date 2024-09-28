@@ -134,7 +134,7 @@ export default {
     // 是否启用高德安全密钥jscode
     useJscode: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 代理服务器域名或地址
     serviceHost: {
